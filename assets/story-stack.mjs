@@ -86,15 +86,11 @@ export function bindStorySwipe(stage,controller,onRelease=()=>{}){
   return cancelGesture;
 }
 
-const slides=[
-  {src:'/prototypes/room.svg',title:'A place to settle in',alt:'Illustrative room composition'},
-  {src:'/assets/story-living.svg',title:'Space for your everyday',alt:'Illustrative living-space composition'},
-  {src:'/assets/story-detail.svg',title:'The quieter details',alt:'Illustrative desk and window composition'}
-];
+import {storyPhotos as slides} from './story-photos.mjs';
 export function initStoryStack(root){
   const host=root.querySelector('.pz-stack');if(!host)return;
   const element=(tag,className,text)=>{const el=document.createElement(tag);el.className=className;if(text)el.textContent=text;return el;};
-  const deck=element('div','pz-story-deck');deck.setAttribute('role','region');deck.setAttribute('aria-roledescription','carousel');deck.setAttribute('aria-label','Illustrative room image stack');
+  const deck=element('div','pz-story-deck');deck.setAttribute('role','region');deck.setAttribute('aria-roledescription','carousel');deck.setAttribute('aria-label','Photos from Panzer Seeta and Panzer Rama');
   const navigation=element('div','pz-story-navigation');
   const previous=element('button','pz-story-previous','←'),next=element('button','pz-story-next','→');
   previous.type=next.type='button';previous.setAttribute('aria-label','Previous story image');next.setAttribute('aria-label','Next story image');
@@ -103,8 +99,8 @@ export function initStoryStack(root){
   const stage=element('div','pz-story-stage');stage.tabIndex=0;stage.setAttribute('aria-label','Image stack. Swipe left or right, or use the arrow keys.');
   const cards=slides.map((slide,i)=>{
     const card=element('div','pz-story-card');card.setAttribute('role','group');card.setAttribute('aria-roledescription','slide');card.setAttribute('aria-label',`${i+1} of ${slides.length}: ${slide.title}`);
-    const img=element('img','');img.src=slide.src;img.alt=slide.alt+'; not a photograph of a Panzer property';img.draggable=false;img.width=1200;img.height=700;
-    const label=element('div','pz-story-card-label');label.append(element('strong','',slide.title),element('span','','Illustration · property photos to follow'));
+    const img=element('img','');img.src=slide.src;img.alt=slide.alt;img.draggable=false;img.width=1440;img.height=1080;img.style.objectPosition=slide.focus;
+    const label=element('div','pz-story-card-label');label.append(element('strong','',slide.title),element('span','',slide.caption));
     card.append(img,label);stage.append(card);return card;
   });
   deck.append(navigation,stage,element('span','pz-story-hint','Swipe left for next · right for previous'));host.append(deck);host.classList.add('pz-stack-ready');
@@ -127,8 +123,8 @@ export function initStoryStack(root){
   let lastWidth=-1;
   function configure(force=false){
     const width=root.clientWidth;if(!force&&width===lastWidth)return;lastWidth=width;
-    cancelGesture();controller.configure({enabled:width<=700,width:cards[0].offsetWidth||300,reduced:reduced.matches});
-    deck.inert=width>700;
+    cancelGesture();controller.configure({enabled:width<960,width:cards[0].offsetWidth||300,reduced:reduced.matches});
+    deck.inert=width>=960;
   }
   new ResizeObserver(()=>configure()).observe(root);
   reduced.addEventListener('change',()=>configure(true));

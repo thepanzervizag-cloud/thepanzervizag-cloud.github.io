@@ -1,9 +1,10 @@
+import {storyPhotos} from './story-photos.mjs';
 const clamp=x=>Math.max(0,Math.min(1,x));
 const mix=(a,b,t)=>a+(b-a)*t;
 export const progressBetween=(value,start,end)=>clamp((value-start)/Math.max(Number.EPSILON,end-start));
 // Keep neighbouring rows within a short scroll, including on tall monitors.
 function audienceSpacing(viewport){
-  const step=Math.max(96,Math.min(120,viewport*.16));
+  const step=Math.max(155,Math.min(188,viewport*.19));
   return {lead:step*.1,step,tail:viewport*.32};
 }
 export function makeJourneyTimeline({storyTop,storyPin,audienceTop,audienceHeadingY,audiencePin,landingY,navyY,viewport}){
@@ -117,8 +118,12 @@ export function initDesktopJourney(root){
   const storyRunway=wrap(story,'pz-story-runway'),audienceRunway=wrap(audience,'pz-audience-runway');
   const sources=['/prototypes/room.svg','/assets/story-living.svg','/assets/story-detail.svg'];
   const deck=el('div','pz-desktop-stack');
-  const cards=sources.map((src,i)=>{const card=el('div','pz-desktop-stack-card'),img=el('img','');img.src=src;img.alt=['Illustrative room','Illustrative living space','Illustrative room detail'][i];img.draggable=false;card.append(img);deck.append(card);return card;});
-  const deckLabel=el('div','pz-desktop-stack-label');deckLabel.textContent='Room illustrations · property photos to follow';
+  const cards=storyPhotos.map(photo=>{
+    const card=el('div','pz-desktop-stack-card'),img=el('img','');
+    img.src=photo.src;img.alt=photo.alt;img.draggable=false;img.style.objectPosition=photo.focus;
+    card.append(img);deck.append(card);return card;
+  });
+  const deckLabel=el('div','pz-desktop-stack-label');deckLabel.textContent=storyPhotos[0].caption;
   stack.append(deck,deckLabel);
   const track=el('div','pz-desktop-audience-track');track.setAttribute('aria-hidden','true');
   sources.forEach(src=>{const img=el('img','');img.src=src;img.alt='';track.append(img);});visual.prepend(track);
@@ -148,6 +153,8 @@ export function initDesktopJourney(root){
     if(lastActive===index)return;lastActive=index;autoSelecting=true;rows[index].click();autoSelecting=false;
   }
   function paintCards(progress){
+    const caption=storyPhotos[Math.round(progress)].caption;
+    if(deckLabel.textContent!==caption)deckLabel.textContent=caption;
     desktopStackFrames(progress).forEach((p,i)=>{cards[i].style.transform=`translate(${p.x}px,${p.y}px) rotate(${p.angle}deg) scale(${p.scale})`;cards[i].style.zIndex=String(p.order);cards[i].setAttribute('aria-hidden',String(i!==Math.round(progress)));});
   }
   function updateRoute(){
@@ -251,13 +258,37 @@ export function initDesktopJourney(root){
   }
   // Focusing a row can scroll it into view. Only a new navigation gesture
   // should hand control of the gallery back to the scroll position.
-  const resumeScroll=()=>{manualSelection=null;pendingStoryScroll=0;};
+  let wheelStop=null,wheelDirection=0,lastWheelTime=-Infinity,stopSince=0,lastWheelSize=0;
+  const resumeScroll=()=>{manualSelection=null;pendingStoryScroll=0;wheelStop=null;stopSince=0;};
   window.addEventListener('wheel',event=>{
     manualSelection=null;
     if(event.deltaY<0)pendingStoryScroll=0;
-    if(!enabled||!timeline||event.ctrlKey||!event.cancelable||event.deltaY<=0||Math.abs(event.deltaX)>event.deltaY||value>=4)return;
+    if(!enabled||!timeline||event.ctrlKey||!event.cancelable||!event.deltaY||Math.abs(event.deltaX)>Math.abs(event.deltaY))return;
     const scroll=scrollPosition();
     const delta=event.deltaY*(event.deltaMode===1?16:event.deltaMode===2?window.innerHeight:1);
+    const direction=Math.sign(delta),now=performance.now();
+    // Keep the momentum tail of a single flick on its destination row.
+    // A fresh gesture or a reversal immediately opens the next stop.
+    const size=Math.abs(delta);
+    const sustained=wheelStop!==null&&stopSince&&now-stopSince>750&&size>=40&&size>=lastWheelSize;
+    if(now-lastWheelTime>230||direction!==wheelDirection||sustained){wheelStop=null;stopSince=0;}
+    lastWheelSize=size;
+    lastWheelTime=now;wheelDirection=direction;
+    const stops=timeline.rows,first=stops[0],last=stops[2];
+    if(wheelStop===null&&scroll+Math.max(0,delta)>=first&&scroll+Math.min(0,delta)<=last){
+      const index=audienceStop((scroll-first)/(stops[1]-first),target-6);
+      if(direction>0&&scroll<first-32)wheelStop=first;
+      else if(direction<0&&scroll>last+32)wheelStop=last;
+      else wheelStop=stops[index+direction]??null;
+    }
+    if(wheelStop!==null&&direction*(scroll+delta-wheelStop)>=0){
+      event.preventDefault();
+      if(!stopSince)stopSince=now;
+      const distance=wheelStop-scroll;
+      if(direction*distance>.5)window.scrollBy({top:distance,behavior:'instant'});
+      return;
+    }
+    if(delta<0||value>=4)return;
     const stop=timeline.stackEnd-2;
     if(scroll<timeline.arrival||scroll>=timeline.stackEnd||scroll+delta<stop)return;
     // Keep the story centred through the final card's settle, then give the

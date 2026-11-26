@@ -1,7 +1,7 @@
 #panzer-home .pz-desktop-stack,#panzer-home .pz-desktop-stack-label,#panzer-home .pz-desktop-audience-track,#panzer-home .pz-desktop-panel-visual,#panzer-home .pz-desktop-image-note,#panzer-home .pz-desktop-trail,#panzer-home .pz-travelling-square{display:none}
 #panzer-home.pz-desktop-ready .pz-stack>.pz-stack-back,#panzer-home.pz-desktop-ready .pz-stack>.pz-stack-middle,#panzer-home.pz-desktop-ready .pz-stack>.pz-photo{display:none}
 #panzer-home.pz-desktop-ready .pz-stack{padding:38px 22px 12px}
-#panzer-home.pz-desktop-ready .pz-desktop-stack{display:block;position:relative;height:300px;isolation:isolate}
+#panzer-home.pz-desktop-ready .pz-desktop-stack{display:block;position:relative;width:100%;max-width:535px;height:300px;margin-inline:auto;isolation:isolate}
 #panzer-home.pz-desktop-ready .pz-desktop-stack-card{position:absolute;inset:0;border:1px solid #aab6a9;border-radius:4px;overflow:hidden;background:#e5decd;box-shadow:0 12px 28px #092f4e19;transform-origin:50% 65%;will-change:transform}
 #panzer-home.pz-desktop-ready .pz-desktop-stack-card img{display:block;width:100%;height:100%;object-fit:cover}
 #panzer-home.pz-desktop-ready .pz-desktop-stack-label{display:block;margin-top:24px;font-size:11px;color:#526575;text-align:center}
