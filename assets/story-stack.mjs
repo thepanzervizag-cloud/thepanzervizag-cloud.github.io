@@ -41,6 +41,7 @@ export function createStackController({count,render,onSettled,requestFrame=reque
   }
   return {
     get state(){return {index,position,animating,dragging,enabled,reduced};},
+    select(photo){cancelFrame(frame);index=photo;settle();},
     configure(options){cancelFrame(frame);frame=0;enabled=options.enabled;width=Math.max(1,options.width);reduced=options.reduced;settle();},
     go(step){if(!enabled||animating||dragging)return false;direction=step<0?-1:1;animateTo(index+direction);return true;},
     drag(dx){
@@ -74,6 +75,10 @@ export function bindStorySwipe(stage,controller,onRelease=()=>{}){
     if(!gesture||gesture.id!==event.pointerId)return;
     const {x,y,horizontal}=gesture;gesture=null;
     if(horizontal){controller.release(event.clientX-x,event.clientY-y);onRelease();}
+    else if(event.pointerType==='touch'&&Math.hypot(event.clientX-x,event.clientY-y)<9){
+      // Some touch browsers suppress the next synthetic click after a swipe.
+      event.target.closest('.pz-story-front')?.click();
+    }
     if(stage.hasPointerCapture(event.pointerId))stage.releasePointerCapture(event.pointerId);
   });
   stage.addEventListener('pointercancel',event=>{if(gesture?.id===event.pointerId)cancelGesture();});
@@ -87,6 +92,7 @@ export function bindStorySwipe(stage,controller,onRelease=()=>{}){
 }
 
 import {storyPhotos as slides} from './story-photos.mjs';
+import {bindPhotoDeck} from './photo-viewer.mjs';
 export function initStoryStack(root){
   const host=root.querySelector('.pz-stack');if(!host)return;
   const element=(tag,className,text)=>{const el=document.createElement(tag);el.className=className;if(text)el.textContent=text;return el;};
@@ -98,9 +104,9 @@ export function initStoryStack(root){
   navigation.append(previous,status,next);
   const stage=element('div','pz-story-stage');stage.tabIndex=0;stage.setAttribute('aria-label','Image stack. Swipe left or right, or use the arrow keys.');
   const cards=slides.map((slide,i)=>{
-    const card=element('div','pz-story-card');card.setAttribute('role','group');card.setAttribute('aria-roledescription','slide');card.setAttribute('aria-label',`${i+1} of ${slides.length}: ${slide.title}`);
+    const card=element('button','pz-story-card');
     const img=element('img','');img.src=slide.src;img.alt=slide.alt;img.draggable=false;img.width=1440;img.height=1080;img.style.objectPosition=slide.focus;
-    const label=element('div','pz-story-card-label');label.append(element('strong','',slide.title),element('span','',slide.caption));
+    const label=element('span','pz-story-card-label');label.append(element('strong','',slide.title),element('span','',slide.caption));
     card.append(img,label);stage.append(card);return card;
   });
   deck.append(navigation,stage,element('span','pz-story-hint','Swipe left for next · right for previous'));host.append(deck);host.classList.add('pz-stack-ready');
@@ -111,6 +117,7 @@ export function initStoryStack(root){
       cards[i].style.zIndex=String(p.order);cards[i].classList.toggle('pz-story-front',p.front);
       // Keep slide announcements stable until the move has settled.
       cards[i].setAttribute('aria-hidden',String(i!==state.index));
+      cards[i].tabIndex=i===state.index?0:-1;
     });
   },onSettled:index=>{
     status.textContent=`${index+1} of ${cards.length}`;host.dataset.storyIndex=String(index);
@@ -119,7 +126,11 @@ export function initStoryStack(root){
   const navigate=step=>{if(controller.go(step)&&controller.state.animating)previous.disabled=next.disabled=true;};
   previous.addEventListener('click',()=>navigate(-1));next.addEventListener('click',()=>navigate(1));
   stage.addEventListener('keydown',event=>{if(event.key==='ArrowLeft'||event.key==='ArrowRight'){event.preventDefault();navigate(event.key==='ArrowLeft'?-1:1);}});
-  const cancelGesture=bindStorySwipe(stage,controller,()=>{if(controller.state.animating)previous.disabled=next.disabled=true;});
+  let swiped=false;
+  stage.addEventListener('pointerdown',()=>{swiped=false;},{passive:true});
+  const cancelGesture=bindStorySwipe(stage,controller,()=>{swiped=true;if(controller.state.animating)previous.disabled=next.disabled=true;});
+  stage.addEventListener('keydown',()=>{swiped=false;});
+  bindPhotoDeck(host,slides,cards,index=>controller.select(index),()=>!swiped&&controller.state.enabled&&!controller.state.animating);
   let lastWidth=-1;
   function configure(force=false){
     const width=root.clientWidth;if(!force&&width===lastWidth)return;lastWidth=width;

@@ -1,4 +1,5 @@
 import {storyPhotos} from './story-photos.mjs';
+import {bindPhotoDeck} from './photo-viewer.mjs';
 const clamp=x=>Math.max(0,Math.min(1,x));
 const mix=(a,b,t)=>a+(b-a)*t;
 export const progressBetween=(value,start,end)=>clamp((value-start)/Math.max(Number.EPSILON,end-start));
@@ -119,7 +120,7 @@ export function initDesktopJourney(root){
   const sources=['/prototypes/room.svg','/assets/story-living.svg','/assets/story-detail.svg'];
   const deck=el('div','pz-desktop-stack');
   const cards=storyPhotos.map(photo=>{
-    const card=el('div','pz-desktop-stack-card'),img=el('img','');
+    const card=el('button','pz-desktop-stack-card'),img=el('img','');
     img.src=photo.src;img.alt=photo.alt;img.draggable=false;img.style.objectPosition=photo.focus;
     card.append(img);deck.append(card);return card;
   });
@@ -152,10 +153,23 @@ export function initDesktopJourney(root){
   function selectAudience(index){
     if(lastActive===index)return;lastActive=index;autoSelecting=true;rows[index].click();autoSelecting=false;
   }
+  let heldPhoto=null,photoOffset=0;
+  bindPhotoDeck(stack,storyPhotos,cards,index=>{
+    heldPhoto=index;
+    photoOffset=(index-Math.round(journeyState(target).stack)+cards.length)%cards.length;
+    paintCards(0);
+  });
   function paintCards(progress){
-    const caption=storyPhotos[Math.round(progress)].caption;
+    const offset=heldPhoto??photoOffset;
+    if(heldPhoto!==null)progress=0;
+    const active=(Math.round(progress)+offset)%cards.length;
+    const caption=storyPhotos[active].caption;
     if(deckLabel.textContent!==caption)deckLabel.textContent=caption;
-    desktopStackFrames(progress).forEach((p,i)=>{cards[i].style.transform=`translate(${p.x}px,${p.y}px) rotate(${p.angle}deg) scale(${p.scale})`;cards[i].style.zIndex=String(p.order);cards[i].setAttribute('aria-hidden',String(i!==Math.round(progress)));});
+    desktopStackFrames(progress).forEach((p,rank)=>{
+      const i=(rank+offset)%cards.length,card=cards[i];
+      card.style.transform=`translate(${p.x}px,${p.y}px) rotate(${p.angle}deg) scale(${p.scale})`;
+      card.style.zIndex=String(p.order);card.setAttribute('aria-hidden',String(i!==active));card.tabIndex=i===active?0:-1;
+    });
   }
   function updateRoute(){
     // Sticky sections move relative to the document. Measure their rendered positions,
@@ -309,6 +323,7 @@ export function initDesktopJourney(root){
   });
   window.addEventListener('scroll',()=>{
     if(!enabled)return;const scroll=scrollPosition();
+    if(heldPhoto!==null&&Math.abs(scroll-lastScroll)>1&&!document.querySelector('.pz-photo-viewer[open]'))heldPhoto=null;
     if(manualSelection===null)target=journeyTarget(scroll,timeline,target);
     if(Math.abs(scroll-lastScroll)>window.innerHeight*1.8&&scroll>=timeline.audienceEnter){value=target===6&&value<5?5:target;velocity=0;}
     lastScroll=scroll;paint();animate();
