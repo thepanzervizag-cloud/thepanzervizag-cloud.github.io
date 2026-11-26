@@ -1,4 +1,15 @@
 /* Section 7C1 only. One light field spans the existing header and hero. */
+/* Paint the full viewport. Keep the desktop content measure inside the sections. */
+html #panzer-home { max-width: none; }
+#panzer-home .pz-hero {
+  min-block-size: calc(100svh - var(--pz-header-height, 7rem));
+  align-content: center;
+}
+@media (min-width: 1600px) {
+  html #panzer-home .pz-wrap {
+    padding-inline: max(64px, calc((100% - 1472px) / 2));
+  }
+}
 @property --pz-scene-cool{syntax:'<color>';inherits:true;initial-value:#d7e0de}
 @property --pz-scene-warm{syntax:'<color>';inherits:true;initial-value:#f0dfb6}
 #panzer-home{position:relative;isolation:isolate;transition:--pz-scene-cool .9s ease,--pz-scene-warm .9s ease}

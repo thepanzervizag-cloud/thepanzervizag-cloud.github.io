@@ -114,7 +114,12 @@ export function initHeroMotion(root){
   toggle.addEventListener('click',()=>{paused=!paused;root.classList.toggle('pz-motion-paused',paused);toggle.setAttribute('aria-pressed',String(paused));toggle.textContent=paused?'Resume background motion':'Pause background motion';syncDrift();});
   form.addEventListener('focusin',()=>{root.classList.add('pz-search-focused');syncDrift();});
   form.addEventListener('focusout',event=>{if(!form.contains(event.relatedTarget))root.classList.remove('pz-search-focused');syncDrift();});
-  function measure(){root.style.setProperty('--pz-atmosphere-height',`${hero.getBoundingClientRect().bottom-root.getBoundingClientRect().top}px`);}
+  function measure(){
+    const headerHeight=header.getBoundingClientRect().height;
+    const atmosphereHeight=hero.getBoundingClientRect().bottom-root.getBoundingClientRect().top;
+    root.style.setProperty('--pz-header-height',`${headerHeight}px`);
+    root.style.setProperty('--pz-atmosphere-height',`${atmosphereHeight}px`);
+  }
   if(typeof ResizeObserver!=='undefined'){
     const observer=new ResizeObserver(measure);observer.observe(hero);observer.observe(header);
   }else{window.addEventListener('resize',measure);}
