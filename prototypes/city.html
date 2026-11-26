@@ -2,8 +2,8 @@
 <link rel="stylesheet" href="/assets/hero-motion.css?v=20261111-random-drift-faster">
 <script type="module" src="/assets/hero-motion.mjs?v=city-edit-reset"></script>
 <script type="module" src="/assets/city-search.mjs?v=india"></script>
-<script type="module" src="/assets/story-stack.mjs?v=20261111-swipe-touch-fix"></script>
-<script type="module" src="/assets/desktop-journey.mjs?v=audience-first-arrival"></script>
+<script type="module" src="/assets/story-stack.mjs?v=residence-photos-1"></script>
+<script type="module" src="/assets/desktop-journey.mjs?v=residence-photos-1"></script>
 <style>
 #panzer-home{--pz-navy:#092F4E;--pz-gold:#F6BF32;--pz-paper:#FFF9ED;--pz-line:#d9d7ce;--pz-soft:#eee9dd;--pz-muted:#526575;background:var(--pz-paper);color:var(--pz-navy);font-family:'Rubik',sans-serif;font-size:15px;line-height:1.7;container-type:inline-size;color-scheme:light;overflow-wrap:break-word}
 #panzer-home *{box-sizing:border-box}
@@ -202,7 +202,7 @@ html{scroll-behavior:smooth}body{margin:0;background:#FFF9ED}button,a,input{-web
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}#panzer-home .pz-property{transition:none;transform:none}}
 
 /* Static fallback; the enhanced mobile story deck uses story-stack.css/mjs. */
-#panzer-home .pz-stack-middle,#panzer-home .pz-stack-illustration,#panzer-home .pz-stack-caption{display:none}
+#panzer-home .pz-stack-middle,#panzer-home .pz-static-story-photo,#panzer-home .pz-stack-caption{display:none}
 @container(max-width:700px){
  #panzer-home .pz-story{gap:34px;padding-block:50px 48px}
  #panzer-home .pz-story h2{font-size:clamp(32px,8.6cqw,48px);line-height:1.08}
@@ -212,7 +212,7 @@ html{scroll-behavior:smooth}body{margin:0;background:#FFF9ED}button,a,input{-web
  #panzer-home .pz-stack-middle{display:block;position:absolute;inset:15px 13px 78px 24px;background:#e4d5b9;border:1px solid #c0af8a;transform:rotate(5deg);z-index:-1;border-radius:3px}
  #panzer-home .pz-stack .pz-photo{display:block;min-height:0;height:clamp(280px,80cqw,355px);padding:0;transform:none;overflow:hidden;border-radius:3px;background:#e8e3d8;border-color:#bfc7c1;box-shadow:0 12px 24px #092f4e12}
  #panzer-home .pz-stack .pz-photo:before,#panzer-home .pz-stack .pz-photo:after{display:none}
- #panzer-home .pz-stack-illustration{display:block;width:100%;height:100%;object-fit:cover}
+ #panzer-home .pz-static-story-photo{display:block;width:100%;height:100%;object-fit:cover}
  #panzer-home .pz-stack .pz-photo-label{position:absolute;inset:auto 0 0;padding:18px 14px;background:#fff9edf5;text-align:left;font-size:11px;line-height:1.6}
  #panzer-home .pz-stack .pz-photo-label b{font-size:14px;margin-bottom:4px}
  #panzer-home .pz-stack .pz-stack-caption{display:flex;flex-direction:column;gap:4px;margin:19px 0 0;font-size:10px;line-height:1.6;letter-spacing:.02em}
@@ -231,8 +231,8 @@ html{scroll-behavior:smooth}body{margin:0;background:#FFF9ED}button,a,input{-web
 #pz-city-options li small{color:#526575}
 #pz-city-options li:hover,#pz-city-options [aria-selected=true]{background:#f7e8c3}
 </style>
-<link rel="stylesheet" href="/assets/story-stack.css?v=20261111-swipe-touch-fix">
-<link rel="stylesheet" href="/assets/desktop-journey.css?v=desktop-audience-rail">
+<link rel="stylesheet" href="/assets/story-stack.css?v=residence-photos-1">
+<link rel="stylesheet" href="/assets/desktop-journey.css?v=residence-photos-1">
 <div id="panzer-home" class="pz-city-view">
   <header class="pz-head pz-wrap" id="pz-top">
     <a href="/" aria-label="Panzer Luxury Residences home"><img class="pz-main-logo" src="/assets/panzer-main-logo-transparent.png" alt="PANZER Luxury Residences"></a>
@@ -260,7 +260,7 @@ html{scroll-behavior:smooth}body{margin:0;background:#FFF9ED}button,a,input{-web
     </section>
     <section class="pz-story pz-wrap" id="pz-story" aria-labelledby="pz-story-title">
       <div><span class="pz-eyebrow">Why Panzer exists</span><h2 id="pz-story-title">Between arriving<br>and belonging.</h2><p>A new city comes with enough to think about. Finding your feet. Starting a role. Getting a project moving.</p><p>Panzer gives you a home-like place to settle for the weeks or months ahead—with comfort, privacy and professional management, so you can focus on what brought you here.</p></div>
-      <figure class="pz-stack"><div class="pz-stack-back" aria-hidden="true"></div><div class="pz-stack-middle" aria-hidden="true"></div><div class="pz-photo"><img class="pz-stack-illustration" src="/prototypes/room.svg" alt="Illustrative room composition, not a photograph of a Panzer property"><span class="pz-photo-label"><b>A first look inside Panzer</b>Residence &amp; living-detail photographs<i>Photo placement · originals to be supplied</i></span></div><figcaption class="pz-stack-caption"><span>01 / 03 · Image stack preview</span><span>Illustration · property photos to follow.</span></figcaption></figure>
+      <figure class="pz-stack"><div class="pz-stack-back" aria-hidden="true"></div><div class="pz-stack-middle" aria-hidden="true"></div><div class="pz-photo"><img class="pz-static-story-photo" src="/assets/seeta-living-room-sofa-and-windows.webp" width="1440" height="1080" alt="Sofas around a coffee table in the living room at Panzer Seeta"></div><figcaption class="pz-stack-caption"><span>Panzer Seeta · Living room</span></figcaption></figure>
     </section>
     <section class="pz-audience pz-wrap" id="pz-audience" aria-labelledby="pz-audience-title">
   <div class="pz-audience-heading"><h2 id="pz-audience-title">Different journeys.<br>A place to settle.</h2><span class="pz-eyebrow">Who it's for</span></div>
