@@ -1,0 +1,35 @@
+/* Section 7C1 only. One light field spans the existing header and hero. */
+@property --pz-scene-cool{syntax:'<color>';inherits:true;initial-value:#d7e0de}
+@property --pz-scene-warm{syntax:'<color>';inherits:true;initial-value:#f0dfb6}
+#panzer-home{position:relative;isolation:isolate;transition:--pz-scene-cool .9s ease,--pz-scene-warm .9s ease}
+#panzer-home .pz-atmosphere{position:absolute;inset:0 0 auto;height:var(--pz-atmosphere-height,900px);overflow:hidden;pointer-events:none;z-index:-1;background:#f2eadb}
+/* Fresh random destinations are animated in JS; these are the static fallbacks. */
+#panzer-home .pz-cloud{position:absolute;left:50%;top:50%;width:105%;height:120%;transform:translate(-50%,-50%);border-radius:48% 52% 58% 42% / 44% 48% 52% 56%;filter:blur(clamp(24px,4cqw,58px));will-change:transform}
+#panzer-home .pz-cloud-navy{transform:translate(-80%,-65%);background:radial-gradient(ellipse,#092f4eb3 0%,#6f9db4ed 34%,#99aad4b3 53%,transparent 72%)}
+#panzer-home .pz-cloud-gold{transform:translate(-20%,-40%);background:radial-gradient(ellipse,#f6bf32 4%,#f3cf70f0 35%,#e9a788a8 56%,transparent 73%)}
+#panzer-home .pz-cloud-teal{transform:translate(-75%,-20%);background:radial-gradient(ellipse,#68aaa6ed 2%,#86b9c4eb 32%,#99aad4a8 52%,transparent 72%)}
+#panzer-home .pz-cloud-apricot{transform:translate(-15%,-80%);background:radial-gradient(ellipse,#e9a788e8 0%,#f6bf32b8 32%,#f7dcaaa8 55%,transparent 74%)}
+/* A quiet centre protects the existing navy copy while the edges stay colourful. */
+#panzer-home .pz-atmosphere::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 51%,#fff9eda3 0%,#fff9ed70 30%,#fff9ed0d 72%),linear-gradient(#fff9ed66,transparent 24%);pointer-events:none}
+#panzer-home .pz-head{position:relative;isolation:isolate;border-bottom-color:#092f4e18}
+#panzer-home .pz-head::before{content:'';position:absolute;inset:0;z-index:-1;opacity:0;background:linear-gradient(115deg,var(--pz-scene-cool,#d7e0de),#fff9eded 48%,var(--pz-scene-warm,#f0dfb6));transition:opacity .9s ease;backdrop-filter:blur(18px) saturate(.8);-webkit-backdrop-filter:blur(18px) saturate(.8)}
+#panzer-home.pz-city-submitted .pz-head::before{opacity:.88}
+#panzer-home .pz-hero{position:relative;isolation:isolate}
+#panzer-home .pz-hero-visual{position:absolute;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+#panzer-home .pz-scene-layer{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transform:scale(1.025);filter:saturate(.55);transition:opacity 1s ease,transform 1.3s cubic-bezier(.22,.61,.36,1)}
+#panzer-home .pz-scene-layer.is-visible{opacity:1;transform:scale(1)}
+#panzer-home .pz-hero-visual::after{content:'';position:absolute;inset:0;opacity:0;background:radial-gradient(ellipse at 0 100%,#f6bf3245,transparent 48%),radial-gradient(ellipse at 100% 0,#fff9edcc,transparent 48%),linear-gradient(90deg,#fff9edb8,#fff9edf2 25%,#fff9edf2 75%,#fff9edb8);transition:opacity 1s ease}
+#panzer-home.pz-scene-active .pz-hero-visual::after{opacity:1}
+#panzer-home .pz-scene-caption{position:relative;margin:18px 0 0;text-align:center;font-size:10px;line-height:1.5;color:#42596a}
+#panzer-home .pz-motion-toggle{position:absolute;right:clamp(22px,6cqw,64px);bottom:9px;min-height:36px;padding:6px 10px;border:1px solid #092f4e35;border-radius:4px;background:#fff9eddb;color:#092f4e;font-size:11px;line-height:1.4;cursor:pointer}
+#panzer-home .pz-motion-toggle[aria-pressed=true]{background:#092f4e;color:#fff9ed}
+@container(max-width:700px){#panzer-home .pz-hero-visual::after{background:radial-gradient(ellipse at 100% 100%,#f6bf3225,transparent 50%),linear-gradient(90deg,#fff9edf5,#fff9edd9)}#panzer-home .pz-motion-toggle{right:24px;bottom:7px}}
+@container(max-width:700px){#panzer-home .pz-cloud{width:130%;height:110%;filter:blur(28px)}#panzer-home .pz-atmosphere::after{background:radial-gradient(ellipse at 50% 50%,#fff9eda3,#fff9ed33),linear-gradient(#fff9ed55,transparent 25%)}}
+@media(prefers-reduced-motion:reduce){#panzer-home{transition:none}#panzer-home .pz-cloud{animation:none;will-change:auto}#panzer-home .pz-cloud-navy{transform:translate(-80%,-65%)}#panzer-home .pz-cloud-gold{transform:translate(-20%,-40%)}#panzer-home .pz-cloud-teal{transform:translate(-75%,-10%)}#panzer-home .pz-cloud-apricot{transform:translate(-15%,-85%)}#panzer-home .pz-head::before,#panzer-home .pz-scene-layer,#panzer-home .pz-hero-visual::after{transition:none;transform:none}#panzer-home .pz-motion-toggle{display:none}}
+
+/* Only the separate animation study has these review controls. */
+.pz-study{background:#092f4e;color:#fff9ed;padding:22px clamp(22px,6vw,64px);font:14px/1.6 system-ui,sans-serif}
+.pz-study p{margin:0 0 12px;max-width:900px}.pz-study strong{color:#f6bf32}
+.pz-study fieldset{border:0;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:10px 22px}
+.pz-study legend{margin-bottom:8px}.pz-study label{display:inline-flex;align-items:center;gap:8px;min-height:44px;cursor:pointer}
+.pz-study input{accent-color:#f6bf32}.pz-study a{color:#fff9ed;text-underline-offset:4px}.pz-study :focus-visible{outline:3px solid #f6bf32;outline-offset:4px}
