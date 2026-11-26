@@ -1,16 +1,21 @@
 const clamp=x=>Math.max(0,Math.min(1,x));
 const mix=(a,b,t)=>a+(b-a)*t;
 export const progressBetween=(value,start,end)=>clamp((value-start)/Math.max(Number.EPSILON,end-start));
-const audienceLead=.19,audienceStep=.55,audienceTail=.32;
+// Keep neighbouring rows within a short scroll, including on tall monitors.
+function audienceSpacing(viewport){
+  const step=Math.max(96,Math.min(120,viewport*.16));
+  return {lead:step*.1,step,tail:viewport*.32};
+}
 export function makeJourneyTimeline({storyTop,storyPin,audienceTop,audienceHeadingY,audiencePin,landingY,navyY,viewport}){
   const storyCentre=storyTop-storyPin;
   const start=storyCentre-viewport*.23,travel=storyCentre-viewport*.13;
   const arrival=storyCentre,stackEnd=arrival+stackScrollDistance(viewport);
   const border=Math.max(stackEnd+viewport*.14,audienceHeadingY-viewport*.56);
   const audienceEnter=Math.max(border+viewport*.04,audienceHeadingY-viewport*.5);
-  const rowStart=Math.max(audienceEnter,audienceTop-audiencePin)+viewport*audienceLead;
-  const rows=[rowStart,rowStart+viewport*audienceStep,rowStart+viewport*audienceStep*2];
-  const depart=rows[2]+viewport*audienceTail,landing=Math.max(depart+viewport*.2,landingY-viewport*.65);
+  const {lead,step,tail}=audienceSpacing(viewport);
+  const rowStart=Math.max(audienceEnter,audienceTop-audiencePin)+lead;
+  const rows=[rowStart,rowStart+step,rowStart+2*step];
+  const depart=rows[2]+tail,landing=Math.max(depart+viewport*.2,landingY-viewport*.65);
   const end=landing+viewport*.24;
   const navyStart=Math.max(end+viewport*.08,navyY-viewport*.88);
   return {start,travel,arrival,stackEnd,border,audienceEnter,rows,depart,landing,end,navyStart,navyEnd:navyStart+viewport*.32};
@@ -231,7 +236,8 @@ export function initDesktopJourney(root){
     storyRunway.style.setProperty('--pz-content-height',`${story.offsetHeight}px`);
     const storyPin=Math.min(0,(vh-story.offsetHeight)/2);
     story.style.setProperty('--pz-story-pin',`${storyPin}px`);
-    audienceRunway.style.setProperty('--pz-runway',`${vh*(audienceLead+2*audienceStep+audienceTail)}px`);
+    const {lead,step,tail}=audienceSpacing(vh);
+    audienceRunway.style.setProperty('--pz-runway',`${lead+2*step+tail}px`);
     audienceRunway.style.setProperty('--pz-content-height',`${audience.offsetHeight}px`);
     const audiencePin=Math.min(0,vh-audience.offsetHeight);
     audience.style.setProperty('--pz-pin-top',`${audiencePin}px`);
