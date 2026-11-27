@@ -137,15 +137,22 @@ export function initDesktopJourney(root){
     const img=el('img','');img.src='/assets/'+file;img.alt='';img.width=1000;img.height=1000;track.append(img);
   });
   art.append(track);visual.prepend(art);
-  for(const [panel,source,alt,label] of [
-    [gold,'/prototypes/room.svg','Illustrative room, not a Panzer property photograph','Your space to settle in · room illustration'],
-    [navy,'/assets/story-detail.svg','Illustrative room detail, not a Panzer property photograph','The details of daily living · room illustration'],
-  ]){
-    const panelVisual=el('div','pz-desktop-panel-visual');
-    const image=el('img',''),caption=el('span','');
-    image.src=source;image.alt=alt;caption.textContent=label;
-    panelVisual.append(image,caption);
-    panel.querySelector('.pz-photo').append(panelVisual);
+  const panelVisual=el('div','pz-desktop-panel-visual');
+  const image=el('img',''),caption=el('span','');
+  image.src='/assets/story-detail.svg';image.alt='Illustrative room detail, not a Panzer property photograph';
+  caption.textContent='The details of daily living · room illustration';
+  panelVisual.append(image,caption);navy.querySelector('.pz-photo').append(panelVisual);
+
+  const amenities=gold.querySelector('.pz-amenities');
+  if(amenities && 'IntersectionObserver' in window){
+    const arrival=new IntersectionObserver(entries=>{
+      if(entries.some(entry=>entry.isIntersecting)){
+        amenities.classList.add('pz-entered');
+        arrival.disconnect();
+      }
+    },{threshold:.15});
+    amenities.classList.add('pz-watch');
+    arrival.observe(amenities);
   }
   const svg=svgEl('svg',{'class':'pz-desktop-trail','aria-hidden':'true',focusable:'false'});
   const dropShape=svgEl('path',{fill:'#F6BF32',class:'pz-edge-droplet'});svg.append(dropShape);
@@ -234,6 +241,7 @@ export function initDesktopJourney(root){
     gold.style.setProperty('--pz-panel-y',mix(16/geometry.goldHeight,1,state.morph));
     gold.style.setProperty('--pz-panel-opacity',value>=9?'1':'0');
     gold.style.setProperty('--pz-panel-content',progressBetween(state.morph,.25,.9));
+    gold.classList.toggle('pz-settled',state.morph===1);
     navy.style.setProperty('--pz-navy-progress',state.navy);
     navy.style.setProperty('--pz-panel-content',progressBetween(state.navy,.25,.9));
   }
