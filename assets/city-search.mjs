@@ -2,6 +2,14 @@ import {entry,matches,normalize,starters,submittedCity} from './city-match.mjs';
 
 const input=document.querySelector('#pz-city-input');
 const form=input.closest('form');
+// Browsers also match :focus-visible on text fields focused by a mouse or finger.
+for(const field of document.querySelectorAll('#pz-city-input, #pz-property-city')){
+  field.addEventListener('pointerdown',()=>field.setAttribute('data-pointer-focus',''));
+  field.addEventListener('blur',()=>field.removeAttribute('data-pointer-focus'));
+  field.addEventListener('keydown',event=>{
+    if(['Tab','ArrowDown','ArrowUp','Escape'].includes(event.key))field.removeAttribute('data-pointer-focus');
+  });
+}
 const panel=form.querySelector('.pz-suggestions');
 const list=panel.querySelector('[role=listbox]');
 const status=panel.querySelector('.pz-suggestions-status');

@@ -1,6 +1,6 @@
-// Section 7C1. Approved city photographs can be registered here later.
-// An illustration is never silently presented as a real city photograph.
-export const CITY_SCENES = Object.freeze({});
+export const CITY_SCENES = Object.freeze({
+  vizag: {src:'/assets/vizag-coast-at-dusk.webp',cool:'#aec9d4',warm:'#e9d5c4',caption:'Visakhapatnam coastline at dusk'}
+});
 export const STUDY_SCENES = Object.freeze({
   coast: {src:'/prototypes/coast.svg',cool:'#c9d8dc',warm:'#eee0bd',caption:'Coastal illustration · not a property photograph'},
   room: {src:'/prototypes/room.svg',cool:'#d6ded8',warm:'#e9d5b9',caption:'Room illustration · not a property photograph'}
@@ -108,6 +108,7 @@ export function initHeroMotion(root){
   const layers=[document.createElement('div'),document.createElement('div')];
   layers.forEach(layer=>{layer.className='pz-scene-layer';visual.append(layer);});hero.prepend(visual);
   const caption=document.createElement('p');caption.className='pz-scene-caption';caption.hidden=true;hero.append(caption);
+  const cityCaption=hero.querySelector('.pz-city-caption');
   const toggle=document.createElement('button');toggle.type='button';toggle.className='pz-motion-toggle';
   toggle.textContent='Pause background motion';toggle.setAttribute('aria-pressed','false');hero.append(toggle);
   let paused=false,active=-1,currentSource='';
@@ -129,6 +130,8 @@ export function initHeroMotion(root){
     root.classList.toggle('pz-scene-active',Boolean(scene));
     root.dataset.heroVisual=scene?'image':'gradient';
     caption.textContent=scene?.caption??'';caption.hidden=!scene?.caption;
+    if(cityCaption)cityCaption.textContent=caption.textContent;
+    root.classList.toggle('pz-vizag-scene',scene===CITY_SCENES.vizag);
     if(!scene){layers.forEach(layer=>layer.classList.remove('is-visible'));currentSource='';active=-1;root.style.removeProperty('--pz-scene-cool');root.style.removeProperty('--pz-scene-warm');return;}
     root.style.setProperty('--pz-scene-cool',scene.cool);root.style.setProperty('--pz-scene-warm',scene.warm);
     if(currentSource===scene.src)return;
@@ -149,7 +152,6 @@ export function initHeroMotion(root){
     root.classList.remove('pz-search-focused');
     syncDrift();
     const key=cityKey(event.detail.city);
-    // Room illustration is the selected prototype reveal; availability is independent.
     let scene=key?(CITY_SCENES[key]??STUDY_SCENES.room):undefined;
     // The study retains optional alternatives for comparison.
     if(root.dataset.animationStudy==='true'&&key){
@@ -158,6 +160,8 @@ export function initHeroMotion(root){
     }
     void submit(scene,Boolean(key));
   });
+  // A direct city visit can initialize the route before its hero is listening.
+  if(root.classList.contains('pz-city-view'))void submit(CITY_SCENES.vizag);
   return {submit};
 }
 

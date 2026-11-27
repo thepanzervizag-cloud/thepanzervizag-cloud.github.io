@@ -38,6 +38,33 @@ html #panzer-home { max-width: none; }
 @container(max-width:700px){#panzer-home .pz-cloud{width:130%;height:110%;filter:blur(28px)}#panzer-home .pz-atmosphere::after{background:radial-gradient(ellipse at 50% 50%,#fff9eda3,#fff9ed33),linear-gradient(#fff9ed55,transparent 25%)}}
 @media(prefers-reduced-motion:reduce){#panzer-home{transition:none}#panzer-home .pz-cloud{animation:none;will-change:auto}#panzer-home .pz-cloud-navy{transform:translate(-80%,-65%)}#panzer-home .pz-cloud-gold{transform:translate(-20%,-40%)}#panzer-home .pz-cloud-teal{transform:translate(-75%,-10%)}#panzer-home .pz-cloud-apricot{transform:translate(-15%,-85%)}#panzer-home .pz-head::before,#panzer-home .pz-scene-layer,#panzer-home .pz-hero-visual::after{transition:none;transform:none}#panzer-home .pz-motion-toggle{display:none}}
 
+/* Keep the coast and its horizon aligned when the search becomes the city page. */
+#panzer-home.pz-vizag-scene .pz-scene-layer{background-position:50% 35%;filter:saturate(.88)}
+#panzer-home.pz-vizag-scene .pz-hero-visual::after{
+  background:radial-gradient(ellipse 62% 90% at 50% 50%,#fff9edf2 0%,#fff9eddc 40%,#fff9ed9c 64%,#fff9ed14 100%);
+}
+@container(max-width:700px){
+  #panzer-home.pz-vizag-scene .pz-hero-visual::after{
+    background:linear-gradient(90deg,#fff9edea 0%,#fff9edce 48%,#fff9eda8 78%,#fff9ed55 100%);
+  }
+}
+#panzer-home :is(#pz-city-input,#pz-property-city):focus{
+  border-color:var(--pz-navy);outline:2px solid var(--pz-navy);outline-offset:2px;
+}
+#panzer-home :is(#pz-city-input,#pz-property-city)[data-pointer-focus]:focus{outline:none}
+#panzer-home #pz-search-result a{
+  display:inline-flex;align-items:center;min-height:44px;margin-top:12px;padding:10px 18px;
+  background:var(--pz-gold);color:var(--pz-navy);border:1px solid var(--pz-gold);
+  font-weight:500;text-decoration:none;
+}
+#panzer-home #pz-search-result a:hover{background:#ffd365}
+@container(max-width:700px){
+  #panzer-home .pz-search .pz-search-row{position:relative}
+  #panzer-home .pz-search .pz-city-field{position:static}
+}
+@media(forced-colors:active){
+  #panzer-home :is(#pz-city-input,#pz-property-city):focus{border-color:Highlight}
+}
 /* Only the separate animation study has these review controls. */
 .pz-study{background:#092f4e;color:#fff9ed;padding:22px clamp(22px,6vw,64px);font:14px/1.6 system-ui,sans-serif}
 .pz-study p{margin:0 0 12px;max-width:900px}.pz-study strong{color:#f6bf32}
