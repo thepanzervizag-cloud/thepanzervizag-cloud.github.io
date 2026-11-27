@@ -43,6 +43,7 @@ root.addEventListener('click', event => {
   history.replaceState({...history.state, panzerQuery:root.querySelector('#pz-city-input').value}, '');
   history.pushState({panzerCity:true}, '', link.href);
   showRoute(true, true);
+  window.scrollTo({top:0,behavior:'instant'});
 });
 
 window.addEventListener('popstate', () => {
