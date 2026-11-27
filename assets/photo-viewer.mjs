@@ -35,6 +35,8 @@ function createGallery(photos){
   function display(){
     const photo=photos[index];
     img.src=photo.src;img.alt=photo.alt;
+    img.style.objectFit='cover';
+    img.style.objectPosition=photo.focus;
     count.textContent=`${index+1} / ${photos.length} · ${photo.caption}`;
   }
   function selectInDecks(){
@@ -44,26 +46,25 @@ function createGallery(photos){
     if(flight){flight.onfinish=null;flight.cancel();flight=null;}
     origin?.classList.remove('pz-viewer-origin');origin=null;
   }
-  // A uniformly scaled photo and an animated crop reproduce the stack's
-  // object-fit: cover framing without stretching the room as it opens.
+  // Resize the photo window itself so its last frame uses the card's real crop.
   function fly(card,opening,startPose=null){
     const source=card.querySelector('img'),box=source.getBoundingClientRect(),full=frame.getBoundingClientRect();
     if(reduced.matches||!box.width||!full.width)return null;
     const matrix=new DOMMatrix(getComputedStyle(card).transform);
     const zoom=Math.hypot(matrix.a,matrix.b),angle=Math.atan2(matrix.b,matrix.a);
     const w=source.offsetWidth*zoom,h=source.offsetHeight*zoom;
-    const scale=Math.max(w/full.width,h/full.height);
-    const dx=full.width*scale-w,dy=full.height*scale-h;
-    const [fx,fy]=getComputedStyle(source).objectPosition.split(' ').map(n=>parseFloat(n)/100);
-    const x=(.5-fx)*dx,y=(.5-fy)*dy;
-    const tx=box.left+box.width/2-full.left-full.width/2+x*Math.cos(angle)-y*Math.sin(angle);
-    const ty=box.top+box.height/2-full.top-full.height/2+x*Math.sin(angle)+y*Math.cos(angle);
-    const crop=[dy*fy,dx*(1-fx),dy*(1-fy),dx*fx].map(v=>Math.max(0,v)/scale+'px').join(' ');
-    const small={transform:`translate(${tx}px,${ty}px) rotate(${angle}rad) scale(${scale})`,clipPath:`inset(${crop} round 4px)`};
-    const large={transform:'translate(0,0) rotate(0rad) scale(1)',clipPath:'inset(0px round 5px)'};
+    const tx=box.left+box.width/2-full.left-w/2;
+    const ty=box.top+box.height/2-full.top-h/2;
+    const small={width:w+'px',height:h+'px',transform:`translate(${tx}px,${ty}px) rotate(${angle}rad)`};
+    const large={width:full.width+'px',height:full.height+'px',transform:'translate(0,0) rotate(0rad)'};
     // Only the lift hides its source. The returning image lands on a painted card.
     if(opening){origin=source;origin.classList.add('pz-viewer-origin');}
-    return picture.animate(opening?[small,large]:[startPose??large,small],{duration:opening?430:360,easing:'cubic-bezier(.22,.74,.22,1)',fill:'both'});
+    const frames=opening?[small,large]:[
+      {...(startPose??large),opacity:1},
+      {offset:.995,opacity:1},
+      {...small,opacity:0}
+    ];
+    return picture.animate(frames,{duration:opening?430:360,easing:'cubic-bezier(.22,.74,.22,1)',fill:'both'});
   }
   function clearFade(){if(fade){fade.cancel();fade.effect.target.remove();fade=null;}}
   function step(direction){
@@ -98,7 +99,7 @@ function createGallery(photos){
     closing=true;
     // A quick close can interrupt the lift before it reaches full size.
     const style=getComputedStyle(picture);
-    const startPose=flight?{transform:style.transform,clipPath:style.clipPath}:null;
+    const startPose=flight?{transform:style.transform,width:style.width,height:style.height}:null;
     resetFlight();
     dialog.classList.remove('pz-viewer-open');
     const deck=visibleDeck();
