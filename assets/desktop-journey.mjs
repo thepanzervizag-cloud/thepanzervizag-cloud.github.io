@@ -137,12 +137,6 @@ export function initDesktopJourney(root){
     const img=el('img','');img.src='/assets/'+file;img.alt='';img.width=1000;img.height=1000;track.append(img);
   });
   art.append(track);visual.prepend(art);
-  const panelVisual=el('div','pz-desktop-panel-visual');
-  const image=el('img',''),caption=el('span','');
-  image.src='/assets/story-detail.svg';image.alt='Illustrative room detail, not a Panzer property photograph';
-  caption.textContent='The details of daily living · room illustration';
-  panelVisual.append(image,caption);navy.querySelector('.pz-photo').append(panelVisual);
-
   const amenities=gold.querySelector('.pz-amenities');
   if(amenities && 'IntersectionObserver' in window){
     const arrival=new IntersectionObserver(entries=>{
@@ -163,6 +157,21 @@ export function initDesktopJourney(root){
   const square=el('div','pz-travelling-square');square.setAttribute('aria-hidden','true');root.append(svg,square);
   const reduced=window.matchMedia('(prefers-reduced-motion: reduce)');
   let enabled=false,timeline,geometry,frame=0,value=0,velocity=0,target=0,lastTime=0,lastScroll=0,lastActive=-1,autoSelecting=false,manualSelection=null,lastRootSize='',initialized=false,pendingStoryScroll=0;
+  const brand=navy.querySelector('.pz-brand-lockup');
+  let brandInView=false;
+  function revealBrand(){
+    if(!brandInView || (enabled && value<11))return;
+    navy.classList.add('pz-brand-revealed');
+    brandArrival?.disconnect();
+  }
+  const brandArrival=brand && 'IntersectionObserver' in window ? new IntersectionObserver(([entry])=>{
+    brandInView=entry.isIntersecting;
+    revealBrand();
+  },{threshold:.18}) : null;
+  if(brandArrival){
+    navy.classList.add('pz-brand-pending');
+    brandArrival.observe(brand);
+  }
   const rect=node=>{const a=node.getBoundingClientRect(),r=root.getBoundingClientRect();return {x:a.left-r.left,y:a.top-r.top,width:a.width,height:a.height,right:a.right-r.left,bottom:a.bottom-r.top};};
   const scrollPosition=()=>-root.getBoundingClientRect().top;
   function selectAudience(index){
@@ -242,6 +251,7 @@ export function initDesktopJourney(root){
     gold.style.setProperty('--pz-panel-opacity',value>=9?'1':'0');
     gold.style.setProperty('--pz-panel-content',progressBetween(state.morph,.25,.9));
     gold.classList.toggle('pz-settled',state.morph===1);
+    if(state.navy===1 && !navy.classList.contains('pz-brand-revealed'))revealBrand();
     navy.style.setProperty('--pz-navy-progress',state.navy);
     navy.style.setProperty('--pz-panel-content',progressBetween(state.navy,.25,.9));
   }
@@ -262,6 +272,7 @@ export function initDesktopJourney(root){
     enabled=desktop&&!reduced.matches&&!root.classList.contains('pz-city-view');root.classList.toggle('pz-desktop-motion',enabled);
     cancelAnimationFrame(frame);frame=0;lastTime=0;pendingStoryScroll=0;
     if(!enabled){
+      revealBrand();
       square.style.opacity='0';dropShape.style.opacity='0';paths.forEach(({line})=>line.style.opacity='0');
       gold.style.removeProperty('--pz-panel-content');rows.forEach(row=>row.style.removeProperty('--pz-row-focus'));
       if(!rows.some(row=>row.getAttribute('aria-pressed')==='true'))selectAudience(0);
