@@ -92,11 +92,12 @@
   justify-self:end;align-items:flex-end;text-align:right;margin:0;width:100%;
 }
 #panzer-home .pz-brand-lockup {
+  isolation:isolate;
   container-type:inline-size;display:grid;grid-template-columns:28% minmax(0,1fr);
   align-items:center;gap:6%;width:min(100%,490px);justify-self:start;color:var(--pz-paper);
 }
 #panzer-home .pz-brand-symbol {
-  position:relative;aspect-ratio:1;border-radius:50%;overflow:hidden;
+  position:relative;z-index:1;aspect-ratio:1;border-radius:50%;overflow:hidden;
   background:var(--pz-paper);border:1px solid var(--pz-paper);
   --pz-soft-halo:0 0 8px #f6bf322b,0 0 18px #f6bf3217;
   --pz-lit-halo:0 0 9px #f6bf3296,0 0 25px #f6bf3259,0 0 42px #f6bf322b;
@@ -108,6 +109,7 @@
 #panzer-home .pz-brand-name {
   font:500 clamp(18px,6.4cqw,29px)/1.22 Outfit,Arial,sans-serif;letter-spacing:-.025em;
 }
+#panzer-home .pz-brand-words {position:relative;z-index:0}
 #panzer-home .pz-brand-tagline {
   margin:9px 0 0;font-size:clamp(12px,3.5cqw,15px);line-height:1.45;color:#e2e7e7;
 }
@@ -128,11 +130,11 @@
   #panzer-home:not(.pz-desktop-motion) .pz-brand-pending:not(.pz-brand-revealed) .pz-panel-copy {opacity:0}
   #panzer-home:not(.pz-desktop-motion) .pz-brand-revealed .pz-panel-copy {animation:pz-brand-tagline .32s ease .18s backwards}
   #panzer-home .pz-brand-pending:not(.pz-brand-revealed) .pz-brand-lockup > * {opacity:0}
-  #panzer-home .pz-brand-revealed .pz-brand-symbol {
+  #panzer-home .pz-brand-revealed :is(.pz-brand-symbol,.pz-brand-name) {
     animation:pz-brand-arrival 1.55s cubic-bezier(.22,.61,.36,1) calc(var(--pz-brand-lead,0s) + .1s) backwards;
   }
   #panzer-home .pz-brand-revealed .pz-brand-name {
-    animation:pz-brand-lettering .62s cubic-bezier(.22,.61,.36,1) calc(var(--pz-brand-lead,0s) + .98s) backwards;
+    animation-name:pz-brand-lettering;
   }
   #panzer-home .pz-brand-revealed .pz-brand-tagline {animation:pz-brand-tagline .4s ease calc(var(--pz-brand-lead,0s) + 1.55s) backwards}
   @keyframes pz-brand-panel {from{transform:translateX(100%)}to{transform:translateX(0)}}
@@ -141,6 +143,10 @@
     18%,53%{opacity:1;transform:translateX(calc(50cqw - 50%)) scale(1);box-shadow:var(--pz-lit-halo)}
     100%{opacity:1;transform:translateX(0);box-shadow:var(--pz-soft-halo)}
   }
-  @keyframes pz-brand-lettering {from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0)}}
+  /* The centred mark's right edge is at 64% of the lockup. The final name starts at 34%. */
+  @keyframes pz-brand-lettering {
+    0%,53%{transform:translateX(30cqw);clip-path:inset(0 100% 0 0)}
+    100%{transform:translateX(0);clip-path:inset(0)}
+  }
   @keyframes pz-brand-tagline {from{opacity:0}to{opacity:1}}
 }
