@@ -7,24 +7,34 @@
 
 #panzer-home.pz-city-view .pz-city-nav { display: inline-block; }
 #panzer-home.pz-city-view .pz-hero > :is(.pz-eyebrow,#pz-headline,.pz-intro,.pz-search) {
-  visibility: hidden;
-  pointer-events: none;
+  display: none;
+}
+#panzer-home.pz-city-view .pz-hero{
+  min-block-size:min(72svh,43rem);
+  padding-block:clamp(12px,3svh,32px);
 }
 #panzer-home.pz-city-view .pz-city-copy {
-  position: absolute;
-  inset: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 2rem clamp(24px,6cqw,64px) 4rem;
   animation: pz-city-arrival .42s ease-out both;
 }
-#panzer-home.pz-city-view .pz-scene-caption { visibility: hidden; pointer-events: none; }
-#panzer-home .pz-city-caption { margin-top: 1rem; font-size: .75rem; color: var(--pz-muted); }
+#panzer-home.pz-city-view .pz-scene-caption { display:none }
+#panzer-home .pz-city-caption { margin-top:.6rem;font-size:.7rem;color:var(--pz-muted) }
+#panzer-home.pz-city-view .pz-city-copy .pz-intro{margin:0}
+#panzer-home .pz-discover-city{
+  display:inline-flex;align-items:center;gap:.6rem;min-height:44px;
+  margin-top:clamp(8px,2svh,20px);font-size:.81rem;color:var(--pz-navy);text-decoration:none;
+}
+#panzer-home .pz-discover-city::before{
+  content:'';width:.52rem;height:.52rem;border:solid currentColor;
+  border-width:0 1.5px 1.5px 0;transform:translateY(-2px) rotate(45deg);
+}
+#panzer-home .pz-discover-city:hover{text-decoration:underline;text-underline-offset:.25em}
 #panzer-home .pz-city-copy h1 { margin: .4rem 0 1rem; }
 #panzer-home .pz-city-copy h1:focus { outline: none; }
-#panzer-home .pz-city-copy .pz-button { margin-top: 1.5rem; }
+#panzer-home .pz-city-copy .pz-button { margin-top:clamp(12px,2svh,22px); }
 @keyframes pz-city-arrival {
   from { opacity: 0; transform: translateY(7px); }
   to { opacity: 1; transform: translateY(0); }

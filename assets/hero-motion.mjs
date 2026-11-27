@@ -106,7 +106,8 @@ export function initHeroMotion(root){
   const visual=document.createElement('div');
   visual.className='pz-hero-visual';visual.setAttribute('aria-hidden','true');
   const layers=[document.createElement('div'),document.createElement('div')];
-  layers.forEach(layer=>{layer.className='pz-scene-layer';visual.append(layer);});hero.prepend(visual);
+  layers.forEach(layer=>{layer.className='pz-scene-layer';visual.append(layer);});
+  atmosphere.append(visual);
   const caption=document.createElement('p');caption.className='pz-scene-caption';caption.hidden=true;hero.append(caption);
   const cityCaption=hero.querySelector('.pz-city-caption');
   const toggle=document.createElement('button');toggle.type='button';toggle.className='pz-motion-toggle';
