@@ -99,8 +99,8 @@
 #panzer-home .pz-brand-symbol {
   position:relative;z-index:1;aspect-ratio:1;border-radius:50%;overflow:hidden;
   background:var(--pz-paper);border:1px solid var(--pz-paper);
-  --pz-soft-halo:0 0 8px #f6bf322b,0 0 18px #f6bf3217;
-  --pz-lit-halo:0 0 9px #f6bf3296,0 0 25px #f6bf3259,0 0 42px #f6bf322b;
+  --pz-soft-halo:0 0 10px 1px #f6bf3238,0 0 24px 2px #f6bf3221;
+  --pz-lit-halo:0 0 11px 1px #f6bf32b3,0 0 32px 3px #f6bf326e,0 0 54px 4px #f6bf3238;
   box-shadow:var(--pz-soft-halo);
 }
 #panzer-home .pz-brand-symbol img {
