@@ -13,13 +13,14 @@
 #panzer-home.pz-desktop-motion .pz-journey{--pz-row-travel:clamp(32px,3.2cqw,48px);padding-inline-end:var(--pz-row-travel)}
 #panzer-home.pz-desktop-motion .pz-journey>span{transform:translateX(calc(var(--pz-row-travel)*var(--pz-row-focus,0)));color:color-mix(in srgb,var(--pz-paper) calc(var(--pz-row-focus,0)*100%),#9eb3c4)}
 #panzer-home.pz-desktop-motion .pz-journey>.pz-journey-number{color:color-mix(in srgb,var(--pz-gold) calc(var(--pz-row-focus,0)*100%),#a5a08a)}
-#panzer-home.pz-desktop-ready .pz-audience-visual .pz-photo{height:470px;min-height:0;overflow:hidden;align-items:end;padding:0}
-#panzer-home.pz-desktop-ready .pz-desktop-audience-track{display:block;position:absolute;inset:0 0 auto;height:300%;width:100%;will-change:transform}
-#panzer-home.pz-desktop-ready .pz-desktop-audience-track img{display:block;width:100%;height:33.333333%;object-fit:cover}
-#panzer-home.pz-desktop-ready .pz-audience-visual .pz-photo-label{position:relative;z-index:1;width:100%;padding:24px;background:#fff9edf2}
+#panzer-home .pz-audience-visual .pz-photo:has(.pz-journey-art){display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto;height:clamp(320px,85cqw,470px);min-height:0;overflow:hidden;padding:0;background:#fff7ea;align-items:stretch;justify-items:stretch}
+#panzer-home .pz-audience-visual .pz-photo:has(.pz-journey-art)::before,#panzer-home .pz-audience-visual .pz-photo:has(.pz-journey-art)::after{display:none}
+#panzer-home .pz-journey-art{position:relative;overflow:hidden}
+#panzer-home .pz-journey-art .pz-desktop-audience-track{display:block;position:absolute;inset:0 0 auto;height:300%;width:100%;will-change:transform}
+#panzer-home .pz-journey-art img{display:block;width:100%;height:33.333333%;object-fit:contain}
+#panzer-home .pz-journey-art+.pz-photo-label{position:relative;padding:12px 20px;background:var(--pz-paper)}
 #panzer-home.pz-desktop-ready .pz-image-index{margin-bottom:10px}
-#panzer-home.pz-desktop-ready #pz-journey-photo-caption,#panzer-home.pz-desktop-ready .pz-audience-visual .pz-photo-label i{display:none}
-#panzer-home.pz-desktop-ready .pz-desktop-image-note{display:block;margin-top:6px;font-size:11px}
+#panzer-home .pz-journey-art+.pz-photo-label :is(#pz-journey-photo-caption,i){display:none}
 #panzer-home.pz-desktop-motion .pz-panel:not(.pz-reverse):before{transform-origin:0 0;transform:scale(var(--pz-panel-x,1),var(--pz-panel-y,1));opacity:var(--pz-panel-opacity,1)}
 #panzer-home.pz-desktop-motion .pz-panel.pz-reverse:before{transform:translateX(calc((1 - var(--pz-navy-progress,1))*100%))}
 #panzer-home.pz-desktop-motion .pz-panel>.pz-panel-copy,#panzer-home.pz-desktop-motion .pz-panel>.pz-photo{opacity:var(--pz-panel-content,1);transform:translateY(calc((1 - var(--pz-panel-content,1))*16px))}

@@ -117,7 +117,11 @@ export function initDesktopJourney(root){
   const svgEl=(tag,attrs={})=>{const node=document.createElementNS(ns,tag);for(const [k,v] of Object.entries(attrs))node.setAttribute(k,v);return node;};
   const wrap=(section,cls)=>{const wrapper=el('div',cls);section.before(wrapper);wrapper.append(section);return wrapper;};
   const storyRunway=wrap(story,'pz-story-runway'),audienceRunway=wrap(audience,'pz-audience-runway');
-  const sources=['/prototypes/room.svg','/assets/story-living.svg','/assets/story-detail.svg'];
+  const sketches=[
+    ['journey-relocating.webp','A newly arrived resident unpacks a family photograph beside her suitcase.'],
+    ['journey-on-assignment.webp','A visiting professional marks the weeks ahead on a calendar.'],
+    ['journey-project-stay.webp','Three consultants arrive home together after work, setting down their keys and folio.']
+  ];
   const deck=el('div','pz-desktop-stack');
   const cards=storyPhotos.map(photo=>{
     const card=el('button','pz-desktop-stack-card'),img=el('img','');
@@ -127,11 +131,15 @@ export function initDesktopJourney(root){
   const deckLabel=el('div','pz-desktop-stack-label');deckLabel.textContent=storyPhotos[0].caption;
   stack.append(deck,deckLabel);
   const track=el('div','pz-desktop-audience-track');track.setAttribute('aria-hidden','true');
-  sources.forEach(src=>{const img=el('img','');img.src=src;img.alt='';track.append(img);});visual.prepend(track);
-  const visualNote=el('span','pz-desktop-image-note');visualNote.textContent='Room illustration · property photos to follow';visual.querySelector('.pz-photo-label').append(visualNote);
+  const art=el('div','pz-journey-art');
+  art.setAttribute('role','img');art.setAttribute('aria-label',sketches[0][1]);
+  sketches.forEach(([file])=>{
+    const img=el('img','');img.src='/assets/'+file;img.alt='';img.width=1000;img.height=1000;track.append(img);
+  });
+  art.append(track);visual.prepend(art);
   for(const [panel,source,alt,label] of [
-    [gold,sources[0],'Illustrative room, not a Panzer property photograph','Your space to settle in · room illustration'],
-    [navy,sources[2],'Illustrative room detail, not a Panzer property photograph','The details of daily living · room illustration'],
+    [gold,'/prototypes/room.svg','Illustrative room, not a Panzer property photograph','Your space to settle in · room illustration'],
+    [navy,'/assets/story-detail.svg','Illustrative room detail, not a Panzer property photograph','The details of daily living · room illustration'],
   ]){
     const panelVisual=el('div','pz-desktop-panel-visual');
     const image=el('img',''),caption=el('span','');
@@ -331,6 +339,7 @@ export function initDesktopJourney(root){
   window.addEventListener('resize',measure,{passive:true});reduced.addEventListener('change',measure);
   new ResizeObserver(()=>{const size=`${root.clientWidth}:${root.clientHeight}`;if(size!==lastRootSize){lastRootSize=size;measure();}}).observe(root);
   rows.forEach((row,i)=>row.addEventListener('click',()=>{
+    art.setAttribute('aria-label',sketches[i][1]);
     if(autoSelecting)return;
     if(enabled){manualSelection=i;lastActive=i;target=6+i;animate();}
     else track.style.transform=`translateY(${-i*100/3}%)`;
