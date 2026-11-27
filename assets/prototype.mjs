@@ -26,7 +26,8 @@ function select(index) {
   if (active === index) return;
   active = index;
   for (const point of points) point.classList.toggle('active', Number(point.dataset.point) === index);
-  for (const label of labels) label.textContent = 'Residency ' + String.fromCharCode(65 + index);
+  const name = points[index]?.querySelector('title')?.textContent;
+  if (name) for (const label of labels) label.textContent = name;
 }
 select(Number(document.querySelector('[data-property-index]')?.dataset.propertyIndex || 0));
 const stories = [...details.querySelectorAll('[data-story]')];
