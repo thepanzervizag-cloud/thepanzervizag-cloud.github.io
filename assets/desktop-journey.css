@@ -79,10 +79,12 @@
   }
 }
 
-#panzer-home .pz-living .pz-panel::before {border-radius:clamp(12px,1.15cqw,20px)}
+#panzer-home .pz-living {--pz-panel-radius:clamp(12px,1.15cqw,20px)}
+#panzer-home .pz-living .pz-panel::before {border-radius:0 var(--pz-panel-radius) var(--pz-panel-radius) 0}
+#panzer-home .pz-living .pz-reverse::before {border-radius:var(--pz-panel-radius) 0 0 var(--pz-panel-radius)}
 #panzer-home .pz-living .pz-reverse:has(.pz-brand-lockup) {
   overflow:clip;
-  padding-inline:calc(19% + clamp(28px,4.5cqw,80px)) clamp(28px,4.5cqw,80px);
+  padding-inline:calc(19% + clamp(24px,3cqw,48px)) clamp(28px,4.5cqw,80px);
   grid-template-columns:minmax(0,1.4fr) minmax(0,.85fr);
   gap:clamp(24px,4cqw,76px);
 }
@@ -90,12 +92,15 @@
   justify-self:end;align-items:flex-end;text-align:right;margin:0;width:100%;
 }
 #panzer-home .pz-brand-lockup {
-  container-type:inline-size;display:grid;grid-template-columns:24% minmax(0,1fr);
-  align-items:center;gap:6%;width:min(100%,440px);justify-self:center;color:var(--pz-paper);
+  container-type:inline-size;display:grid;grid-template-columns:28% minmax(0,1fr);
+  align-items:center;gap:6%;width:min(100%,490px);justify-self:start;color:var(--pz-paper);
 }
 #panzer-home .pz-brand-symbol {
   position:relative;aspect-ratio:1;border-radius:50%;overflow:hidden;
   background:var(--pz-paper);border:1px solid var(--pz-paper);
+  --pz-soft-halo:0 0 8px #f6bf322b,0 0 18px #f6bf3217;
+  --pz-lit-halo:0 0 9px #f6bf3296,0 0 25px #f6bf3259,0 0 42px #f6bf322b;
+  box-shadow:var(--pz-soft-halo);
 }
 #panzer-home .pz-brand-symbol img {
   position:absolute;width:122%;height:122%;max-width:none;left:-11%;top:-11%;display:block;
@@ -124,17 +129,17 @@
   #panzer-home:not(.pz-desktop-motion) .pz-brand-revealed .pz-panel-copy {animation:pz-brand-tagline .32s ease .18s backwards}
   #panzer-home .pz-brand-pending:not(.pz-brand-revealed) .pz-brand-lockup > * {opacity:0}
   #panzer-home .pz-brand-revealed .pz-brand-symbol {
-    animation:pz-brand-arrival 1.05s cubic-bezier(.22,.61,.36,1) calc(var(--pz-brand-lead,0s) + .1s) backwards;
+    animation:pz-brand-arrival 1.55s cubic-bezier(.22,.61,.36,1) calc(var(--pz-brand-lead,0s) + .1s) backwards;
   }
   #panzer-home .pz-brand-revealed .pz-brand-name {
-    animation:pz-brand-lettering .58s cubic-bezier(.22,.61,.36,1) calc(var(--pz-brand-lead,0s) + .53s) backwards;
+    animation:pz-brand-lettering .62s cubic-bezier(.22,.61,.36,1) calc(var(--pz-brand-lead,0s) + .98s) backwards;
   }
-  #panzer-home .pz-brand-revealed .pz-brand-tagline {animation:pz-brand-tagline .4s ease calc(var(--pz-brand-lead,0s) + 1s) backwards}
+  #panzer-home .pz-brand-revealed .pz-brand-tagline {animation:pz-brand-tagline .4s ease calc(var(--pz-brand-lead,0s) + 1.55s) backwards}
   @keyframes pz-brand-panel {from{transform:translateX(100%)}to{transform:translateX(0)}}
   @keyframes pz-brand-arrival {
-    0%{opacity:0;transform:translateX(calc(50cqw - 50%))}
-    32%{opacity:1;transform:translateX(calc(50cqw - 50%))}
-    100%{opacity:1;transform:translateX(0)}
+    0%{opacity:0;transform:translateX(calc(50cqw - 50%)) scale(.94);box-shadow:var(--pz-soft-halo)}
+    18%,53%{opacity:1;transform:translateX(calc(50cqw - 50%)) scale(1);box-shadow:var(--pz-lit-halo)}
+    100%{opacity:1;transform:translateX(0);box-shadow:var(--pz-soft-halo)}
   }
   @keyframes pz-brand-lettering {from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0)}}
   @keyframes pz-brand-tagline {from{opacity:0}to{opacity:1}}
